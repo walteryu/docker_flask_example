@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from flask import Flask, request, jsonify, render_template
 import sqlite3 as sqlite
 import sys
@@ -11,7 +12,7 @@ def dict_factory(cursor, row):
     for idx, col in enumerate(cursor.description):
         d[col[0]] = row[idx]
     return d
-    
+
 @app.route('/', methods=['GET'])
 def home():
     return """<h1>Distant Reading Archive</h1>
@@ -34,7 +35,7 @@ def api_all():
 @app.route("/api/v1/resources/books", methods=['GET'])
 def api_filter():
     query_parameters = request.args
-    
+
     id = query_parameters.get('id')
     published = query_parameters.get('published')
     author = query_parameters.get('author')
@@ -44,9 +45,9 @@ def api_filter():
     conn = sqlite.connect('../data/books.db')
     conn.row_factory = dict_factory
     cur = conn.cursor()
-    
+
     results = cur.execute(query, to_filter).fetchall()
-    
+
     return jsonify(results)
 
 @app.route("/api/v1/resources/books/json", methods=['GET'])
@@ -91,5 +92,4 @@ if __name__ == '__main__':
     if os.environ.get('PORT') is not None:
         app.run(debug=True, host='0.0.0.0', port=os.environ.get('PORT'))
     else:
-        app.run(debug=True, host='0.0.0.0') 
-
+        app.run(debug=True, host='0.0.0.0')
